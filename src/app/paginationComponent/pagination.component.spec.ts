@@ -33,17 +33,24 @@ describe('Pagination',()=>{
         fixure.detectChanges();
     });
    
-    it('when click next, page number should be incremented by 1',()=>{
+    it('when click next, page number should be incremented by 1 and emit pagedata change event',()=>{
         let val=pageNumber;
+        spyOn(component.pageData,'emit');
+        
         component.next();
+       
         expect(val+1).toBe(component.pageNumber);
+        
+        expect(component.pageData.emit).toHaveBeenCalled();  
     })
-    it('when click prev, page number should be decremented by 1',()=>{
+    it('when click prev, page number should be decremented by 1 and emit pagedata change event',()=>{
         pageNumber=4;
         component.pageNumber=pageNumber;
         let val=pageNumber;
+        spyOn(component.pageData,'emit');
         component.prev();
         expect(val-1).toBe(component.pageNumber);
+        expect(component.pageData.emit).toHaveBeenCalled();  
     })
     it('when click prev, page number cannot be set to negative',()=>{
         component.prev();

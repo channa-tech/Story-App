@@ -6,6 +6,7 @@ import { Pagination } from "../paginationComponent/pagination.component";
 import { Story } from "../../Models/Story";
 import { HtmlParser } from "@angular/compiler";
 import { SimpleChange } from "@angular/core";
+import { By } from "@angular/platform-browser";
 
 describe('DisplayComponent',()=>{
   let component:DisplayComponent;
@@ -48,5 +49,22 @@ describe('DisplayComponent',()=>{
     let changes={data:new SimpleChange(null,data,false)};
     component.ngOnChanges(changes);
     expect(component.ngOnChanges).toHaveBeenCalled();
+  })
+  it('should set pageData to pageSize',()=>{
+    pageSize=2;
+    pageNumber=0;
+    component.data=data;
+    component.pageSize=pageSize;
+    component.pageNumber=pageNumber;
+    component.setData();
+   expect(component.pageData.length).toBe(pageSize);
+  })
+  it('should handle pageDataChange event',()=>{
+    spyOn(component,'onPageDataChange').and.callThrough();
+    component.setData();
+    fixture.detectChanges();
+    fixture.debugElement.query(By.directive(Pagination)).triggerEventHandler('pageData',[{id:1,title:'title',url:'url'}]);
+    expect(component.onPageDataChange).toHaveBeenCalled();
+    expect(component.pageData).toEqual([{id:1,title:'title',url:'url'}]);
   })
 })

@@ -35,7 +35,6 @@ export class DisplayComponent implements OnInit,OnChanges{
     }
 
     setData(){
-      console.log('called');
       this.pageData=  this.data.slice(this.pageNumber*this.pageSize,(this.pageNumber*this.pageSize)+this.pageSize)
     }
     
