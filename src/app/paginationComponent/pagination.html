@@ -1,0 +1,10 @@
+
+<select [formControl]="dropdownFormctrl">
+    <option  *ngFor="let val of pageSizeOptions" [value]="val">
+        {{val}}
+    </option>
+</select>&nbsp;
+<span>{{getStartPage()}}-{{getEndPage()}} of {{data.length}}</span>&nbsp;
+<button [disabled]="pageNumber==0" (click)="prev()">Prev</button>&nbsp;&nbsp;
+<button  [disabled]="!((pageNumber+1)*pageSize<data.length)" (click)="next()">Next</button>
+
