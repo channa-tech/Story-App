@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, input, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import {  FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Story } from '../../Models/Story';
 import { Pagination } from '../paginationComponent/pagination.component'
@@ -14,6 +14,7 @@ import { Pagination } from '../paginationComponent/pagination.component'
 export class DisplayComponent implements OnInit,OnChanges{
    
    @Input()data!:Story[];
+   @Input() showSpin:boolean=true;
     pageData:Story[]=[];
     pageSizeOptions:number[]=[10,20,30,40,50];
     pageNumber:number=0;
@@ -21,7 +22,8 @@ export class DisplayComponent implements OnInit,OnChanges{
     constructor() {
     }
     ngOnChanges(changes: SimpleChanges): void {
-    this.setData();
+      if(!changes['data'])
+      this.setData();
     }
     
     ngOnInit(): void {
@@ -31,7 +33,7 @@ export class DisplayComponent implements OnInit,OnChanges{
         this.pageData=val;
     }
     showSpinner():boolean{
-      return !this.pageData || this.pageData.length === 0;
+      return this.showSpin;
     }
 
     setData(){
