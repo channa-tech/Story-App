@@ -32,13 +32,13 @@ describe('DisplayComponent',()=>{
     component.pageSizeOptions=pageSizeOptions
     fixture.detectChanges();
   })
-  it('show spinner when page data is null',()=>{
-    component.pageData=[];
+  it('show spinner when showSpin is set to true',()=>{
+    component.showSpin=true;
     let val=component.showSpinner();
     expect(val).toBe(true);
   })
-  it('hide spinner when page data is not null',()=>{
-    component.pageData=[{id:1,title:"title",url:'url1'}];
+  it('hide spinner when showSpin is set to false ',()=>{
+    component.showSpin=false;
     let val=component.showSpinner();
     expect(val).toBe(false);
   })
@@ -61,7 +61,7 @@ describe('DisplayComponent',()=>{
   })
   it('should handle pageDataChange event',()=>{
     spyOn(component,'onPageDataChange').and.callThrough();
-    component.setData();
+    component.showSpin=false;
     fixture.detectChanges();
     fixture.debugElement.query(By.directive(Pagination)).triggerEventHandler('pageData',[{id:1,title:'title',url:'url'}]);
     expect(component.onPageDataChange).toHaveBeenCalled();

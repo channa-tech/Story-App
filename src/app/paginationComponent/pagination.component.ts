@@ -27,12 +27,15 @@ export class Pagination implements OnInit, OnChanges{
     }
     ngOnChanges(changes: SimpleChanges): void {
         if (changes["data"]!) {
+           setTimeout(()=>{
             this.setData();
+           },0); 
         }
     }
     
   
     getStartPage() {
+        if(!this.data || this.data.length==0) return 0;
         return this.pageNumber <= 0 ? 1 : (this.pageNumber * this.pageSize) + 1;
     }
     getEndPage() {

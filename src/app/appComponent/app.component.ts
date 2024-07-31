@@ -22,21 +22,31 @@ export class AppComponent implements OnInit   {
   constructor(private service:HttpService) {
     
   }
+  spinner:boolean=true;
   ngOnInit(): void {
     this.service.getStories().subscribe(
       {
         next:(val)=>{
-          this.data=val
+          this.data=val;
+          this.spinner=false;
+        },
+        error:(er)=>{
+          this.spinner=false;
         }
       }
     );
   }
   
   search(){
-    this.data=[];
+    this.spinner=true;
     this.service.search(this.ctrl.value).subscribe({
       next:(val)=>{
         this.data=val;
+        this.spinner=false;
+      },
+      error:(er)=>{
+        this.spinner=false;
+       
       }
     });
   }
