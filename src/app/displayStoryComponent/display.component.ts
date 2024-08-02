@@ -1,41 +1,76 @@
 import { CommonModule } from '@angular/common';
 import { Component, input, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import {  FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {  FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Story } from '../../Models/Story';
 import { Pagination } from '../paginationComponent/pagination.component'
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { HttpService } from '../../Services/httpService';
 
 @Component({
   selector: 'display-story',
   standalone: true,
-  imports: [CommonModule,FormsModule,ReactiveFormsModule,Pagination],
+  imports: [RouterLink,RouterOutlet,CommonModule,FormsModule,ReactiveFormsModule,Pagination],
   templateUrl: './display.html',
   styleUrl: './display.css'
 })
-export class DisplayComponent implements OnInit,OnChanges{
+export class DisplayComponent implements OnInit{
    
-   @Input()data!:Story[];
-   @Input() showSpin:boolean=true;
+   
+   
     pageData:Story[]=[];
     pageSizeOptions:number[]=[10,20,30,40,50];
     pageNumber:number=0;
     pageSize:number=10;
-    constructor() {
+    data:Story[]=[];
+    ctrl:FormControl=new FormControl('');
+    constructor(private router: Router,private service:HttpService) {
     }
-    ngOnChanges(changes: SimpleChanges): void {
-      if(!changes['data'])
-      this.setData();
-    }
-    
+    spinner:boolean=true;
     ngOnInit(): void {
-    }
+    
+    this.service.getStories().subscribe(
+      {
+        next:(val)=>{
+          this.data=val;
+          this.spinner=false;
+        },
+        error:(er)=>{
+          this.spinner=false;
+        }
+      }
+    );
+  }
+  
+  search(){
+    this.spinner=true;
+    this.service.search(this.ctrl.value).subscribe({
+      next:(val)=>{
+        this.data=val;
+        this.setData();
+        this.spinner=false;
+      },
+      error:(er)=>{
+        this.spinner=false;
+      }
+    });
+  }
+  
+    
+    
+    
 
     public onPageDataChange(val:Story[]){
         this.pageData=val;
     }
     showSpinner():boolean{
-      return this.showSpin;
+      return this.spinner;
     }
-
+    openDetailsInNewTab(item: Story): void {
+      localStorage.clear();
+      localStorage.setItem('story',JSON.stringify(item));
+      window.open(this.router.serializeUrl(this.router.createUrlTree(['/item-details'])), '_blank');  
+  }
+  
     setData(){
       this.pageData=  this.data.slice(this.pageNumber*this.pageSize,(this.pageNumber*this.pageSize)+this.pageSize)
     }

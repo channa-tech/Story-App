@@ -1,5 +1,9 @@
+<div style="margin-bottom: 5px;">
+  <input [formControl]="ctrl" id="ctrl" style="width: 40%;" type="text" placeholder="Search by Title" />&nbsp;
+  <button (click)="search()">Search</button>
+</div>
 <div *ngIf="showSpinner()" class="ring-spinner"></div>
-<table *ngIf="!showSpinner()"  class="data-table">
+<table *ngIf="!(showSpinner())"  class="data-table">
     <thead>
       <tr>
         <th>Id</th>
@@ -12,7 +16,7 @@
       <tr>
         
         <td>{{item.id}}</td>
-        <td>{{item.title}}</td>
+        <td><a  href="#" (click)="openDetailsInNewTab(item)"> {{item.title}}</a></td>
         <td>{{item.url}}</td>
       </tr>
     </ng-container>

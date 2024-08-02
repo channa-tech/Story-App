@@ -7,7 +7,16 @@ import { Story } from "../../Models/Story";
 import { HtmlParser } from "@angular/compiler";
 import { SimpleChange } from "@angular/core";
 import { By } from "@angular/platform-browser";
-
+import { Observable, of } from "rxjs";
+import { HttpService } from "../../Services/httpService";
+export class MockService{
+  getStories():Observable<Story[]>{
+      return of([{id:1,title:'title',url:'url1'}]);
+  }
+  search(query:string):Observable<Story[]>{
+      return of([{id:1,title:query,url:'url1'}]);
+  }
+}
 describe('DisplayComponent',()=>{
   let component:DisplayComponent;
   let fixture:ComponentFixture<DisplayComponent>
@@ -24,6 +33,13 @@ describe('DisplayComponent',()=>{
     await TestBed.configureTestingModule({
       imports:[CommonModule,FormsModule,ReactiveFormsModule,Pagination]
     }).compileComponents();
+    TestBed.overrideComponent(DisplayComponent, {
+      set: {
+        providers: [
+          { provide: HttpService, useClass: MockService }
+        ]
+      }
+    });
     fixture=TestBed.createComponent(DisplayComponent);
     component=fixture.componentInstance;
     component.data=data;
@@ -33,22 +49,14 @@ describe('DisplayComponent',()=>{
     fixture.detectChanges();
   })
   it('show spinner when showSpin is set to true',()=>{
-    component.showSpin=true;
+    component.spinner=true;
     let val=component.showSpinner();
     expect(val).toBe(true);
   })
   it('hide spinner when showSpin is set to false ',()=>{
-    component.showSpin=false;
+    component.spinner=false;
     let val=component.showSpinner();
     expect(val).toBe(false);
-  })
-  it('should fire ngOnChanges',()=>{
-    console.log(component);
-    spyOn(component, 'ngOnChanges').and.callThrough();
-    component.data=[{id:1,title:"title",url:'url1'}];
-    let changes={data:new SimpleChange(null,data,false)};
-    component.ngOnChanges(changes);
-    expect(component.ngOnChanges).toHaveBeenCalled();
   })
   it('should set pageData to pageSize',()=>{
     pageSize=2;
@@ -61,10 +69,35 @@ describe('DisplayComponent',()=>{
   })
   it('should handle pageDataChange event',()=>{
     spyOn(component,'onPageDataChange').and.callThrough();
-    component.showSpin=false;
+    component.spinner=false;
     fixture.detectChanges();
     fixture.debugElement.query(By.directive(Pagination)).triggerEventHandler('pageData',[{id:1,title:'title',url:'url'}]);
     expect(component.onPageDataChange).toHaveBeenCalled();
     expect(component.pageData).toEqual([{id:1,title:'title',url:'url'}]);
   })
+
+   it('should initialise data',()=>{
+        component.ngOnInit();
+        fixture.detectChanges();
+       expect(component.data.length).toBeGreaterThan(0);
+       expect(component.data).toEqual([{id:1,title:'title',url:'url1'}]);
+    })
+
+
+     it('should return stories with search title',()=>{
+        const ctrol=component.ctrl;
+        ctrol.setValue("Search");
+        (fixture.nativeElement as HTMLElement).querySelector('button')?.click();
+        fixture.detectChanges();
+        expect(component.data.every(v=>v.title.includes('Search'))).toBe(true);
+
+    })
+    it('should open a new tab with the correct URL', () => {
+      const url="/item-details";
+      spyOn(window, 'open');
+      
+      component.openDetailsInNewTab(data[0]);
+  
+      expect(window.open).toHaveBeenCalledWith(url, '_blank');
+    });
 })
