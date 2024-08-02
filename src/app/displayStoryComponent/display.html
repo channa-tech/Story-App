@@ -6,7 +6,6 @@
 <table *ngIf="!(showSpinner())"  class="data-table">
     <thead>
       <tr>
-        <th>Id</th>
         <th>Title</th>
         <th>URL</th>
       </tr>
@@ -15,15 +14,14 @@
       <ng-container *ngFor="let item of pageData;let i=index">
       <tr>
         
-        <td>{{item.id}}</td>
-        <td><a  href="#" (click)="openDetailsInNewTab(item)"> {{item.title}}</a></td>
-        <td>{{item.url}}</td>
+        <td> {{item.title}}</td>
+        <td><a href="#" (click)="openDetailsInNewTab(item)">{{item.url}}</a></td>
       </tr>
     </ng-container>
     </tbody>
     <tfoot>
       <tr>
-        <td colspan="3"> 
+        <td colspan="2"> 
            <pagination class="pge" style="float: right;" [data]="data" (pageData)="onPageDataChange($event)" 
            [pageSizeOptions]="pageSizeOptions" [pageNumber]="pageNumber" [pageSize]="pageSize">
 
