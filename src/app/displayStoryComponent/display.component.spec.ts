@@ -92,12 +92,5 @@ describe('DisplayComponent',()=>{
         expect(component.data.every(v=>v.title.includes('Search'))).toBe(true);
 
     })
-    it('should open a new tab with the correct URL', () => {
-      const url="/item-details";
-      spyOn(window, 'open');
-      
-      component.openDetailsInNewTab(data[0]);
-  
-      expect(window.open).toHaveBeenCalledWith(url, '_blank');
-    });
+   
 })

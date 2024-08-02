@@ -31,7 +31,7 @@ export class DisplayComponent implements OnInit{
     this.service.getStories().subscribe(
       {
         next:(val)=>{
-          this.data=val;
+          this.data=val.filter(v=>v.url && v.url.trim()!=='');
           this.spinner=false;
         },
         error:(er)=>{
@@ -45,7 +45,7 @@ export class DisplayComponent implements OnInit{
     this.spinner=true;
     this.service.search(this.ctrl.value).subscribe({
       next:(val)=>{
-        this.data=val;
+        this.data=val.filter(v=>v.url && v.url.trim()!=='');
         this.setData();
         this.spinner=false;
       },
@@ -65,11 +65,7 @@ export class DisplayComponent implements OnInit{
     showSpinner():boolean{
       return this.spinner;
     }
-    openDetailsInNewTab(item: Story): void {
-      localStorage.clear();
-      localStorage.setItem('story',JSON.stringify(item));
-      window.open(this.router.serializeUrl(this.router.createUrlTree(['/item-details'])), '_blank');  
-  }
+   
   
     setData(){
       this.pageData=  this.data.slice(this.pageNumber*this.pageSize,(this.pageNumber*this.pageSize)+this.pageSize)
