@@ -8,7 +8,7 @@ import { Story } from '../../Models/Story';
   imports: [CommonModule,FormsModule,ReactiveFormsModule],
   templateUrl: './pagination.html'
 })
-export class Pagination implements OnInit, OnChanges{
+export class Pagination implements OnInit{
     
     dropdownFormctrl: FormControl = new FormControl(10);
     @Input() pageSizeOptions: number[] = [7, 10, 12, 20, 30, 40, 50];
@@ -25,15 +25,7 @@ export class Pagination implements OnInit, OnChanges{
             }
         })
     }
-    ngOnChanges(changes: SimpleChanges): void {
-        if (changes["data"]!) {
-           setTimeout(()=>{
-            this.setData();
-           },0); 
-        }
-    }
-    
-  
+   
     getStartPage() {
         if(!this.data || this.data.length==0) return 0;
         return this.pageNumber <= 0 ? 1 : (this.pageNumber * this.pageSize) + 1;
@@ -41,20 +33,23 @@ export class Pagination implements OnInit, OnChanges{
     getEndPage() {
         return ((this.pageNumber * this.pageSize) + this.pageSize) > this.data.length ? this.data.length : ((this.pageNumber * this.pageSize) + this.pageSize);
     }
+    getPagedData(){
+        this.pageData.emit(this.data.slice(this.pageNumber * this.pageSize, (this.pageNumber * this.pageSize) + this.pageSize));
+    }
     setData() {
         this.pageNumber = 0;
-        this.pageData.emit(this.data.slice(this.pageNumber * this.pageSize, (this.pageNumber * this.pageSize) + this.pageSize));
+        this.getPagedData();
     }
     prev() {
         this.pageNumber--;
         if (this.pageNumber < 0) {
             this.pageNumber = 0;
         }
-        this.pageData.emit(this.data.slice(this.pageNumber * this.pageSize, (this.pageNumber * this.pageSize) + this.pageSize));
+        this.getPagedData();
     }
     next() {
         this.pageNumber++;
-        this.pageData.emit(this.data.slice(this.pageNumber * this.pageSize, (this.pageNumber * this.pageSize) + this.pageSize));
+        this.getPagedData();
 
     }
 }

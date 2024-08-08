@@ -32,6 +32,7 @@ export class DisplayComponent implements OnInit{
       {
         next:(val)=>{
           this.data=val.filter(v=>v.url && v.url.trim()!=='');
+          this.setData();
           this.spinner=false;
         },
         error:(er)=>{
